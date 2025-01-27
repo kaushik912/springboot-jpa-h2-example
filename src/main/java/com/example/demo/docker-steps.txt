@@ -1,0 +1,62 @@
+Yes, you can run a Spring Boot application and MySQL on Docker locally. Here's a step-by-step guide: 
+Step 1: Create Docker Images 
+MySQL Docker Image. 
+   docker pull mysql:latest
+
+• Spring Boot Docker Image: 
+	• Add the following plugin to your Spring Boot project's pom.xml: 
+
+
+
+   <plugin>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-maven-plugin</artifactId>
+       <configuration>
+           <image>
+               <name>your-docker-image-name</name>
+           </image>
+       </configuration>
+   </plugin>
+
+Build the image. 
+   mvn clean package docker:build
+
+Step 2: Create a Docker Compose File 
+Create a docker-compose.yml file in your project's root directory: 
+version: "3.7"
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      MYSQL_DATABASE: your_database_name
+    ports:
+      - "3306:3306"
+  spring-boot-app:
+    image: your-docker-image-name
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/your_database_name
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: your_mysql_root_password
+
+Step 3: Run with Docker Compose 
+docker-compose up
+
+This will start both the MySQL and Spring Boot containers, linking them together. 
+Key Points 
+
+• Database Connection: Ensure your Spring Boot application's application.properties or application.yml file is configured to connect to the MySQL container. 
+• Ports: Ensure that the ports exposed in the docker-compose.yml file do not conflict with any ports already in use on your system. 
+• Environment Variables: Use environment variables in your docker-compose.yml file to configure the MySQL container and your Spring Boot application. 
+• Docker Image Name: Replace your-docker-image-name with the actual name of your Spring Boot Docker image. 
+• Database Name: Replace your_database_name with the actual name of your database. 
+• MySQL Root Password: Replace your_mysql_root_password with a strong password for your MySQL root user. 
+
+
+Generative AI is experimental.
+
+[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java[-] https://github.com/prebid/prebid-cache-java
